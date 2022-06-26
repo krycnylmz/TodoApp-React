@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
+import style from "./style.module.css";
 
 function Form({ addTodo, todos }) {
   const initialForm = {
@@ -56,15 +57,18 @@ function Form({ addTodo, todos }) {
 
   return (
     <>
-      <form onSubmit={OnSubmit}>
+      <form onSubmit={OnSubmit} className={style.form}>
         <input
+          className={style.title}
           name="title"
           placeholder="What do you want to do?"
           onChange={OnChangeInput}
           value={form.title}
         />
 
-        <button type="submit">Add</button>
+        <button type="submit" className={style.addBtn}>
+          +
+        </button>
       </form>
       <ToastContainer />
     </>
