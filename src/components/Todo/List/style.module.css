@@ -1,0 +1,75 @@
+ul{
+padding:0;
+}
+
+li{
+  list-style: none;
+  text-decoration: none;
+  background-color:#BDE038;
+  margin:40px;
+  padding:10px;
+  cursor: pointer;
+  display:grid;
+  position:relative;
+}
+li:hover{
+  background-color:#caeb56;
+  box-shadow: 0 0 4px #fff
+}
+
+li form{
+  margin-top:10px;
+}
+li form input{
+  height:20px;
+  padding:10px;
+  border: none;
+  background-color:#e7f5b8;
+}
+
+
+li form textarea {
+  height:30px;
+  padding:10px;
+  border: none;
+  background-color:#e7f5b8;
+  margin-top: 10px;
+}
+
+li form .options {
+  margin-top:20px;
+}
+
+li .lastUpdate {
+  right:0;
+  top: -24px;
+  background-color:#BDE038;
+  margin-left: 5px;
+  font-size: 10px;
+  position:absolute;
+  padding:5px;
+  
+}
+
+li form select {
+  min-width:100px;
+  padding:10px;
+  border: none;
+  background-color:#e7f5b8;
+}
+
+li form button {
+  right: 10px;
+  position: absolute;
+  min-width:100px;
+  padding:10px;
+  border: none;
+  background-color:#4de64d;
+  cursor:pointer;
+}
+.hidden{
+  display: none
+}
+.show{
+  display: grid;
+}
