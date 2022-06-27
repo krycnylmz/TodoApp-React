@@ -57,8 +57,17 @@ li form select {
   border: none;
   background-color:#e7f5b8;
 }
+li form .delete {
+  right: 120px;
+  position: absolute;
+  min-width:100px;
+  padding:10px;
+  border: none;
+  background-color:#e64d4d;
+  cursor:pointer;
+}
 
-li form button {
+li form .save {
   right: 10px;
   position: absolute;
   min-width:100px;
