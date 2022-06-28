@@ -19,6 +19,22 @@ function Form({ addTodo, todos }) {
       return false;
     }
 
+    //send todo to backend
+    axios
+      .post("https://kc-yilmaz.jotform.dev/intern-api/createTask", {
+        title: form.title,
+      })
+      .then(function (res) {
+        const response = JSON.parse(res.request.response);
+        if (response.responseCode === 200) {
+          addTodo([...todos, form]);
+        }
+        notify(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
     const notify = (response) => {
       switch (response.responseCode) {
         case 404:
@@ -34,22 +50,6 @@ function Form({ addTodo, todos }) {
           break;
       }
     };
-
-    //send todo to backend
-    axios
-      .post("https://kc-yilmaz.jotform.dev/intern-api/createTask", {
-        title: form.title,
-      })
-      .then(function (res) {
-        const response = JSON.parse(res.request.response);
-        if (response.responseCode) {
-          addTodo([...todos, form]);
-        }
-        notify(response);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
 
     //clear the input
     setForm(initialForm);
