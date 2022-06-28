@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import style from "./style.module.css";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 function List({ todos, changeTodo }) {
+  const [autoAnimParent] = useAutoAnimate();
   const [tasks, setTasks] = useState([]);
-
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -17,9 +18,9 @@ function List({ todos, changeTodo }) {
 
   const [detail, setDetail] = useState(false);
 
+  // Toogle effect to see more detail about task
   const ShowDetail = (e) => {
     setDetail(false);
-
     const span = e.target.querySelector("form");
     const isShow = span.getAttribute("isshow");
     if (isShow === "false") {
@@ -29,20 +30,6 @@ function List({ todos, changeTodo }) {
       span.setAttribute("isshow", "false");
       span.className = style.hidden;
     }
-  };
-
-  const SaveChanges = (e) => {
-    // if (form.title === "") {
-    //   return false;
-    // }
-  };
-
-  const removeObj = (arr, value) => {
-    return arr.filter(function () {
-      if (value > -1) {
-        arr.splice(value, 1);
-      }
-    });
   };
 
   //Delete item from the list and db
@@ -67,8 +54,54 @@ function List({ todos, changeTodo }) {
         console.log(error);
       });
   };
+
+  //Update todos
+  const OnChangeInput = (id, e) => {
+    const newState = tasks.map((obj) => {
+      // if id equalsid, update value by name of input
+      if (obj.id === id) {
+        return { ...obj, [e.target.name]: e.target.value };
+      }
+      // otherwise return object as is
+      return obj;
+    });
+
+    setTasks(newState);
+    console.log(tasks);
+  };
+
+  //Save changes on the db
+  const SaveChanges = (task) => {
+    console.log(task.id, task.title, task.body, task.stat, task.due_to);
+
+    axios
+      .put("https://kc-yilmaz.jotform.dev/intern-api/updateTask", {
+        id: task.id,
+        title: task.title,
+        body: task.body,
+        stat: task.stat,
+        due_to: task.due_to,
+      })
+      .then(function (res) {
+        // if (res.data.responseCode === 200) {
+        //   const deletedItemId = JSON.parse(res.config.data).id;
+        //   const deletedObj = tasks.find((elem) => elem.id === deletedItemId);
+        //   var newTasks = tasks.filter((x) => {
+        //     return x !== deletedObj;
+        //   });
+        //   //update state
+        //   setTasks(newTasks);
+        changeTodo();
+        // }
+        console.log(res);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
   return (
-    <ul>
+    <ul ref={autoAnimParent}>
       {isLoading && <div>Loding...</div>}
       {tasks.map((task) => (
         <li key={task.id} onClick={(e) => ShowDetail(e)}>
@@ -79,15 +112,26 @@ function List({ todos, changeTodo }) {
             isshow={detail.toString()}
             className={detail ? style.show : style.hidden}
           >
-            <input name="title" placeholder={task.title} />
-            {task.body ? (
-              <p>{task.body}</p>
-            ) : (
-              <textarea name="body" placeholder="Add more information!" />
-            )}
+            <input
+              name="title"
+              placeholder={task.title}
+              onChange={(e) => OnChangeInput(task.id, e)}
+              value={task.title}
+            />
+
+            <textarea
+              name="body"
+              placeholder="Add more information!"
+              value={task.body}
+              onChange={(e) => OnChangeInput(task.id, e)}
+            />
 
             <div className={style.options}>
-              <select name="stat">
+              <select
+                name="stat"
+                onChange={(e) => OnChangeInput(task.id, e)}
+                defaultValue={task.stat}
+              >
                 <option value="To-Do">To-Do</option>
                 <option value="Doing">Doing</option>
                 <option value="Completed">Completed</option>
@@ -100,10 +144,7 @@ function List({ todos, changeTodo }) {
               >
                 Delete
               </button>
-              <button
-                className={style.save}
-                onClick={() => SaveChanges(task.id)}
-              >
+              <button className={style.save} onClick={() => SaveChanges(task)}>
                 Save
               </button>
             </div>
